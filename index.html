@@ -1,0 +1,173 @@
+<html lang="ja">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<title>Spoken Dialog by Javascript</title>
+<style>
+  h1 {
+    position: relative;
+    display: inline-block;
+    padding: 0 55px;
+  }
+  h1:before, h1:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    display: inline-block;
+    width: 45px;
+    height: 2px;
+    border-top: solid 1px black;
+    border-bottom: solid 1px black;
+  }
+  h1:before {
+    left:0;
+  }
+  h1:after {
+    right: 0;
+  }
+  
+  body {
+    background: #eeeeee;
+    font-family: "Yu Gothic", YuGothic, Verdana, 'Hiragino Kaku Gothic ProN','Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, sans-serif;
+    text-align: center;
+    padding-top: 40px;
+  }
+  button {
+    display: inline-block;
+    max-width: 180px;
+    text-align: left;
+    background-color: #ffa300;
+    font-size: 18px;
+    color: #FFF;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 24px;
+    border-radius: 4px;
+    border-bottom: 4px solid #d37800;
+  }
+  button:active {
+    transform: translateY(4px);
+    border-bottom: none;
+  }
+
+  .box {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    color: #474747;
+    background: whitesmoke;/*背景色*/
+    border-left: double 7px #4ec4d3;/*左線*/
+    border-right: double 7px #4ec4d3;/*右線*/
+  }
+  .box p {
+    margin: 0; 
+    padding: 0;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>課題：音声対話</h1>
+
+<p>
+<button id="startButton">start</button>
+<button id="stopButton">stop</button>
+</p>
+
+<div class = "box">
+<p>
+<div id="resultOutput"></div>
+</p>
+</div>
+
+<script>
+// 応答の定義（ハッシュ）    
+var response = {
+    "あなたは誰ですか":"私は、ジャヴァスクリプトで作成された、Web音声対話サービスです",
+    "何歳ですか":"作者は20歳です",
+    "元気ですか":"元気ですよー",
+    "好きな食べ物は":"お寿司です",
+    "作成者の名前は":"らりるれろ",
+    "好きなアニメは何ですか":"機動戦士ガンダムです",
+    "こんにちは":"こんにちは",
+    "おはようございます":"おはようございます"
+};
+
+if (!'SpeechSynthesisUtterance' in window) {
+    alert("あなたのブラウザはSpeech Synthesis APIに未対応です。");
+}
+
+const startButton = document.querySelector('#startButton'); // 開始ボタン
+const stopButton = document.querySelector('#stopButton'); // 停止ボタン
+const resultOutput = document.querySelector('#resultOutput'); // 結果出力エリア
+
+const tts = new SpeechSynthesisUtterance(); // TTSインスタンスを生成
+//tts.text = textForm.value; // テキストを設定
+tts.lang = "ja-JP"; // 言語(日本語)、英語の場合はen-US
+tts.rate = 1.0; // 速度
+tts.pitch = 1.0; // 声の高さ
+tts.volume = 1.0; // 音量
+
+SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+if (!'SpeechRecognition' in window) {
+    alert("あなたのブラウザはSpeech Recognition APIに未対応です。");
+}
+
+const asr = new SpeechRecognition(); // ASRインスタンスを生成
+asr.lang = "ja-JP"; // 言語（日本語）
+asr.interimResults = true; // 途中結果出力をオン
+asr.continuous = true; // 継続入力をオン
+
+let output = ''; // 出力
+
+// 認識結果が出力されたときのイベントハンドラ
+asr.onresult = function(event){
+    let transcript = event.results[event.resultIndex][0].transcript; // 結果文字列
+    let newText = transcript.replace(/\r?\n/g,'').replace(/\0/g,''); // 余計な文字の削除
+
+    let output_not_final = '';
+    let pattern = '';
+    if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
+	    asr.abort(); // 音声認識を停止
+
+      // 部分一致でも応答できるように。
+        for(key in response) {
+          if(key.indexOf(newText) > -1) {
+            output += newText + " => " + response[key] + '<br>'; // 応答結果の出力
+            tts.text = response[key];
+          }
+        }
+      
+	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+	    tts.onend = function(event){
+	        asr.start(); // 音声認識を再開
+	    }
+
+	    speechSynthesis.speak(tts); // 再生
+    } else { // 結果がまだ未確定のとき
+        output_not_final = '<span style="color:#ddd;">' + newText + '</span>';
+    }
+    resultOutput.innerHTML = output + output_not_final;
+}
+
+// 開始ボタンのイベントハンドラ
+startButton.addEventListener('click', function() {
+    asr.start();
+})
+
+// 停止ボタンのイベントハンドラ
+stopButton.addEventListener('click', function() {
+    asr.stop();
+})
+
+// #工夫した点#
+// forとindexOfを利用して、追加課題1のキーワードの部分一致でも応答ができる実装をした。
+// CSSを記述して、レイアウトの調整、ボタンの装飾を施した。
+// しゃべったさいに余計な文字列が入っていると、それを削除するようにした。
+
+</script>
+
+</body>
+</html>
