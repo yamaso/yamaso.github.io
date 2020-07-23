@@ -131,7 +131,6 @@ asr.onresult = function(event){
     let output_not_final = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
 	    asr.abort(); // 音声認識を停止
-      let ret = response[transcript];
 
       let answer;
       let webpage;
@@ -139,6 +138,7 @@ asr.onresult = function(event){
       let keys = Object.keys(response)
       // 部分一致でも応答できるように。
       keys.forEach(function(key) {
+        let ret = response[transcript];
         let flag = true;
         console.log(transcript);
         key.split(',').forEach(function(word) {
