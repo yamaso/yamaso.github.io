@@ -92,7 +92,8 @@ var response = {
     "作成者,名前":"らりるれろ",
     "好きな,アニメ":"機動戦士ガンダムです。特に宇宙世紀が好きです。",
     "こんにちは":"こんにちは",
-    "おはようございます":"おはようございます"
+    "おはようございます":"おはようございます",
+    "和歌山,天気": ["和歌山県の天気予報を表示します", "https://weather.yahoo.co.jp/weather/jp/30/"]
 };
 
 if (!'SpeechSynthesisUtterance' in window) {
@@ -130,8 +131,10 @@ asr.onresult = function(event){
     let output_not_final = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
 	    asr.abort(); // 音声認識を停止
+      let ret = response[transcript];
 
       let answer;
+      let webpage;
 
       let keys = Object.keys(response)
       // 部分一致でも応答できるように。
@@ -151,16 +154,18 @@ asr.onresult = function(event){
         }
       });
 
-      if (flag == false){
-        for(key in keys) {
-          if(key.indexOf(newText) > -1) {
-            answer = response[key];
-          }
-        }
-      }
-    
+        //for(key in response) {
+          //if(key.indexOf(newText) > -1) {
+            //output += newText + " => " + response[key] + '<br>'; // 応答結果の出力
+            //tts.text = response[key];
+          //}
+        //}
+      
       if(typeof answer == 'undefined'){
       answer = "ごめんなさい。わかりません。";
+      } else {
+        answer = ret[0];
+        webpage = ret[1];
       }
 
       output  += transcript + ' => ' + answer + '<br>';
@@ -168,6 +173,9 @@ asr.onresult = function(event){
       
 	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    tts.onend = function(event){
+          if(typeof webpage != 'undefined') [
+            location.href = webpage;
+          ]
 	        asr.start(); // 音声認識を再開
 	    }
 
