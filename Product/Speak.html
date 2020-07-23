@@ -149,7 +149,8 @@ asr.onresult = function(event){
         });
 
         if(flag) {
-          answer = response[key];
+          answer = ret[0];
+          webpage = ret[1]
           console.log(key + " : " + answer);
         }
       });
@@ -162,10 +163,7 @@ asr.onresult = function(event){
         //}
       
       if(typeof answer == 'undefined'){
-      answer = "ごめんなさい。わかりません。";
-      } else {
-        answer = ret[0];
-        webpage = ret[1];
+        answer = "ごめんなさい。わかりません。";
       }
 
       output  += transcript + ' => ' + answer + '<br>';
