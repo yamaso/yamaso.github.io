@@ -149,21 +149,16 @@ asr.onresult = function(event){
           answer = response[key];
           console.log(key + " : " + answer);
         }
+      });
 
-        if(flag_test==false) {
-          if(key.indexOf(transcript) > -1) {
+      if (flag == false){
+        for(key in keys) {
+          if(key.indexOf(newText) > -1) {
             answer = response[key];
           }
         }
-      });
-
-        //for(key in response) {
-          //if(key.indexOf(newText) > -1) {
-            //output += newText + " => " + response[key] + '<br>'; // 応答結果の出力
-            //tts.text = response[key];
-          //}
-        //}
-      
+      }
+    
       if(typeof answer == 'undefined'){
       answer = "ごめんなさい。わかりません。";
       }
