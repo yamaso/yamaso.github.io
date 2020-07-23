@@ -85,12 +85,12 @@
 <script>
 // 応答の定義（ハッシュ）    
 var response = {
-    "あなたは誰ですか":"私は、ジャヴァスクリプトで作成された、Web音声対話サービスです",
-    "何歳ですか":"作者は20歳です",
-    "元気ですか":"元気ですよー",
-    "好きな食べ物は":"お寿司です",
-    "作成者の名前は":"らりるれろ",
-    "好きなアニメは何ですか":"機動戦士ガンダムです。特に宇宙世紀が好きです。",
+    "あなた,誰":"私は、ジャヴァスクリプトで作成された、Web音声対話サービスです",
+    "あなた,何歳":"作者は20歳です",
+    "あなた,元気":"元気ですよー",
+    "好きな,食べ物":"お寿司です",
+    "作成者,名前":"らりるれろ",
+    "好きな,アニメ":"機動戦士ガンダムです。特に宇宙世紀が好きです。",
     "こんにちは":"こんにちは",
     "おはようございます":"おはようございます"
 };
@@ -128,21 +128,42 @@ asr.onresult = function(event){
     let newText = transcript.replace(/\r?\n/g,'').replace(/\0/g,''); // 余計な文字の削除
 
     let output_not_final = '';
-    let pattern = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
 	    asr.abort(); // 音声認識を停止
 
-      // 部分一致でも応答できるように。
-        for(key in response) {
-          if(key.indexOf(newText) > -1) {
-            output += newText + " => " + response[key] + '<br>'; // 応答結果の出力
-            tts.text = response[key];
-          }
-        }
+      let answer;
 
-        if(typeof answer == 'undefined'){
-	        answer = "ごめんなさい。わかりません。";
-    	  }
+      let keys = Object.keys(response)
+      // 部分一致でも応答できるように。
+      keys.forEach(function(key) {
+        let flag = true;
+        console.log(transcript);
+        key.split(',').forEach(function(word) {
+          let pattern = new RegExp(word);
+          let flag_test = pattern.test(transcript) // マッチしたらtrue, しなかったらfalse
+          flag = flag && flag_test;
+          console.log(pattern + '+' + ':' + flag_test);
+        });
+
+        if(flag) {
+          answer = response[key];
+          console.log(key + " : " + answer);
+        }
+      }
+
+        //for(key in response) {
+          //if(key.indexOf(newText) > -1) {
+            //output += newText + " => " + response[key] + '<br>'; // 応答結果の出力
+            //tts.text = response[key];
+          //}
+        //}
+
+      if(typeof answer == 'undefined'){
+        answer = "ごめんなさい。わかりません。";
+      }
+
+      output  += transcript + ' => ' + answer + '<br>';
+      tts.text = answer;
       
 	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    tts.onend = function(event){
@@ -151,7 +172,7 @@ asr.onresult = function(event){
 
 	    speechSynthesis.speak(tts); // 再生
     } else { // 結果がまだ未確定のとき
-        output_not_final = '<span style="color:#ddd;">' + newText + '</span>';
+        output_not_final = '<span style="color:#ddd;">' + transcript + '</span>';
     }
     resultOutput.innerHTML = output + output_not_final;
 }
