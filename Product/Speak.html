@@ -139,6 +139,10 @@ asr.onresult = function(event){
             tts.text = response[key];
           }
         }
+
+        if(typeof answer == 'undefined'){
+	        answer = "ごめんなさい。わかりません。";
+    	  }
       
 	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    tts.onend = function(event){
@@ -159,6 +163,7 @@ startButton.addEventListener('click', function() {
 
 // 停止ボタンのイベントハンドラ
 stopButton.addEventListener('click', function() {
+    asr.abort();
     asr.stop();
 })
 
