@@ -173,9 +173,9 @@ asr.onresult = function(event){
       
 	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    tts.onend = function(event){
-          if(typeof webpage != 'undefined') [
+          if(typeof webpage != 'undefined') {
             location.href = webpage;
-          ]
+          }
 	        asr.start(); // 音声認識を再開
 	    }
 
