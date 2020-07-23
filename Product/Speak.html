@@ -92,8 +92,7 @@ var response = {
     "作成者,名前":"らりるれろ",
     "好きな,アニメ":"機動戦士ガンダムです。特に宇宙世紀が好きです。",
     "こんにちは":"こんにちは",
-    "おはようございます":"おはようございます",
-    "和歌山,天気": ["和歌山県の天気予報を表示します", "https://weather.yahoo.co.jp/weather/jp/30/"]
+    "おはようございます":"おはようございます"
 };
 
 if (!'SpeechSynthesisUtterance' in window) {
@@ -133,12 +132,10 @@ asr.onresult = function(event){
 	    asr.abort(); // 音声認識を停止
 
       let answer;
-      let webpage;
 
       let keys = Object.keys(response)
       // 部分一致でも応答できるように。
       keys.forEach(function(key) {
-        let ret = response[transcript];
         let flag = true;
         console.log(transcript);
         key.split(',').forEach(function(word) {
@@ -149,8 +146,7 @@ asr.onresult = function(event){
         });
 
         if(flag) {
-          answer = ret[0];
-          webpage = ret[1]
+          answer = response[key];
           console.log(key + " : " + answer);
         }
       });
@@ -163,7 +159,7 @@ asr.onresult = function(event){
         //}
       
       if(typeof answer == 'undefined'){
-        answer = "ごめんなさい。わかりません。";
+      answer = "ごめんなさい。わかりません。";
       }
 
       output  += transcript + ' => ' + answer + '<br>';
@@ -171,9 +167,6 @@ asr.onresult = function(event){
       
 	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    tts.onend = function(event){
-          if(typeof webpage != 'undefined') {
-            location.href = webpage;
-          }
 	        asr.start(); // 音声認識を再開
 	    }
 
