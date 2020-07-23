@@ -125,7 +125,7 @@ let output = ''; // 出力
 // 認識結果が出力されたときのイベントハンドラ
 asr.onresult = function(event){
     let transcript = event.results[event.resultIndex][0].transcript; // 結果文字列
-    let newText = transcript.replace(/\r?\n/g,'').replace(/\0/g,''); // 余計な文字の削除
+    //let newText = transcript.replace(/\r?\n/g,'').replace(/\0/g,''); // 余計な文字の削除
 
     let output_not_final = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
@@ -149,7 +149,7 @@ asr.onresult = function(event){
           answer = response[key];
           console.log(key + " : " + answer);
         }
-      }
+      });
 
         //for(key in response) {
           //if(key.indexOf(newText) > -1) {
@@ -157,9 +157,9 @@ asr.onresult = function(event){
             //tts.text = response[key];
           //}
         //}
-
+      
       if(typeof answer == 'undefined'){
-        answer = "ごめんなさい。わかりません。";
+      answer = "ごめんなさい。わかりません。";
       }
 
       output  += transcript + ' => ' + answer + '<br>';
