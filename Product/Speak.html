@@ -149,6 +149,13 @@ asr.onresult = function(event){
           answer = response[key];
           console.log(key + " : " + answer);
         }
+        if(flag==false) {
+          for(key in keys){
+            if(key.indexOf(transcript) > -1) {
+              answer = response[key];
+            }
+          }
+        }
       });
 
         //for(key in response) {
