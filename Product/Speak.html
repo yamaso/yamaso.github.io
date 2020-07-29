@@ -151,8 +151,16 @@ asr.onresult = function(event){
         if(flag) {
           answer = response[key];
           console.log(key + " : " + answer);
-          output  += transcript + ' => ' + answer + '<br>';
           tts.text = answer;
+            
+          output  += transcript + ' => ' + answer + '<br>';
+          resultOutput.innerHTML = output;
+          speechSynthesis.speak(tts); // 再生
+
+        // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+          tts.onend = function(event){
+              asr.start(); // 音声認識を再開
+          }
         }
       });
 
@@ -190,15 +198,15 @@ asr.onresult = function(event){
           if(res.result.method == "SAY"){
             var answer = res.result.param_text_tts || res.result.param_text;
             tts.text = answer;
-
-            // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
-	    			tts.onend = function(event){
-	        			asr.start(); // 音声認識を再開
-	    			}
             
             output  += transcript + ' => ' + answer + '<br>';
             resultOutput.innerHTML = output;
-	    			speechSynthesis.speak(tts); // 再生
+            speechSynthesis.speak(tts); // 再生
+
+          // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+	    			tts.onend = function(event){
+	        			asr.start(); // 音声認識を再開
+	    			}
           }else{
             asr.start();  // 音声認識を再開
           }
@@ -207,16 +215,10 @@ asr.onresult = function(event){
         // HTTPリクエストの実行
         request.send();
       }
-      
-	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
-	    tts.onend = function(event){
-	        asr.start(); // 音声認識を再開
-      }
-      speechSynthesis.speak(tts); // 再生
     } else { // 結果がまだ未確定のとき
         output_not_final = '<span style="color:#ddd;">' + transcript + '</span>';
+        resultOutput.innerHTML = output + output_not_final;
     }
-  resultOutput.innerHTML = output + output_not_final;
 }
 
 // 開始ボタンのイベントハンドラ
