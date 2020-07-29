@@ -189,8 +189,16 @@ asr.onresult = function(event){
           // method が SAY のときのみ
           if(res.result.method == "SAY"){
             var answer = res.result.param_text_tts || res.result.param_text;
-            output  += transcript + ' => ' + answer + '<br>';
             tts.text = answer;
+
+            // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+	    			tts.onend = function(event){
+	        			asr.start(); // 音声認識を再開
+	    			}
+            
+            output  += transcript + ' => ' + answer + '<br>';
+            resultOutput.innerHTML = output;
+	    			speechSynthesis.speak(tts); // 再生
           }else{
             asr.start();  // 音声認識を再開
           }
