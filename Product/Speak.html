@@ -186,7 +186,7 @@ asr.onresult = function(event){
         
           // method が SAY のときのみ
           if(res.result.method == "SAY"){
-            var answer = res.result.param_text_tts || res.result.param_text;
+            answer = res.result.param_text_tts || res.result.param_text;
 
           }else{
             asr.start();  // 音声認識を再開
