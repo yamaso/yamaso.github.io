@@ -206,7 +206,30 @@ asr.onresult = function(event){
           // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    			tts.onend = function(event){
 	        			asr.start(); // 音声認識を再開
+            }
+          /* 天気を取得するAPIをテスト（日本に対応していなかったのでコメントアウトします。）
+          }else if(res.result.method == "WEATHER"){
+            request.addEventListener("readystatechange", function () {
+              if (this.readyState === this.DONE) {
+                console.log(this.responseText);
+              }
+            });
+            console.log(res.result.param_place);
+            request.open("GET", "https://mxrck-ser-programadores-apis.p.rapidapi.com/weather/forecast/"+res.result.param_place+"/c.json?lang=en");
+            request.setRequestHeader("x-rapidapi-host", "mxrck-ser-programadores-apis.p.rapidapi.com");
+            request.setRequestHeader("x-rapidapi-key", "7246445e25mshdcc3b09e6146d9bp1f943djsn4c1be9d14d1e");
+
+            var answer = data.wether.description;
+            tts.text = answer;
+            output  += transcript + ' => ' + answer + '<br>';
+            resultOutput.innerHTML = output;
+            speechSynthesis.speak(tts); // 再生
+
+          // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+	    			tts.onend = function(event){
+	        			asr.start(); // 音声認識を再開
 	    			}
+          */
           }else{
             tts.text = "こちらでどうでしょう？";
             output  += transcript + ' => ' + tts.text + '<br>';
