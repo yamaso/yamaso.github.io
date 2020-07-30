@@ -208,7 +208,11 @@ asr.onresult = function(event){
 	        			asr.start(); // 音声認識を再開
 	    			}
           }else{
-            asr.start();  // 音声認識を再開
+            tts.text = "こちらでどうでしょう？";
+            output  += transcript + ' => ' + tts.text + '<br>';
+            resultOutput.innerHTML = output;
+            speechSynthesis.speak(tts); // 再生
+            location.href = "https://www.google.com/search?client=ms-google-coop&q="+transcript+"&cx=014719415616747167135:c9nwo09w8b4"
           }
         }
       }
