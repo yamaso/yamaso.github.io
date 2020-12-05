@@ -7,15 +7,19 @@
     text-align: center;
 }
 
+.elm1_b {
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+}
 .elm1 {
     grid-row: 1 / 2;
-    grid-column: 3 / 4;
+    grid-column: 2 / 3;
     position: relative;
 }
 
 .elm1_p {
     grid-row: 1 / 2;
-    grid-column: 4 / 6;
+    grid-column: 3 / 4;
 }
 
 .elm1 p {
@@ -28,7 +32,7 @@
 
 .connect1 {
     grid-row: 2 / 3;
-    grid-column: 3 / 4;
+    grid-column: 2 / 3;
     margin-left: 100px;
     width: 5px;
     height: 150px;
