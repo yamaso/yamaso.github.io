@@ -1,6 +1,8 @@
 .history {
     display: grid;
     position: relative;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
 }
 
 .elm1 {
@@ -14,7 +16,7 @@
     grid-column: 4 / 6;
 }
 
-.elm1_p p {
+.elm1 p {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -25,4 +27,13 @@
     padding:0;
     color: #231815;
     font-size: 1.0rem;
+}
+
+.connect1 {
+    grid-row: 2 / 3;
+    grid-column: 3 / 4;
+    margin-left: 100px;
+    width: 5px;
+    height: 150px;
+    background-color: #231815;
 }
