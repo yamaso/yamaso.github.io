@@ -1,8 +1,10 @@
 .history {
     display: grid;
     max-width: 1000px;
-    grid-template-columns: 6rem;
+    margin: 10.0rem;
+    grid-template-columns: auto;
     grid-template-rows: auto;
+    text-align: center;
 }
 
 .elm1 {
